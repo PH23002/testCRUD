@@ -1,4 +1,3 @@
-// src/controllers/categoryController.ts
 
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
@@ -33,13 +32,13 @@ export const updateCategory = async (req: Request, res: Response) => {
   const categoryRepository = getRepository(categories);
   const updatedCategoryData = req.body;
   try {
-    const categories = await categoryRepository.findOne(category_id);
-    if (!categories) {
+    const category = await categoryRepository.findOneById(category_id);
+    if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
-    categoryRepository.merge(categories, updatedCategoryData);
-    await categoryRepository.save(categories);
-    res.status(200).json(categories);
+    categoryRepository.merge(category, updatedCategoryData);
+    await categoryRepository.save(category);
+    res.status(200).json(category);
   } catch (error) {
     console.error('Error updating category:', error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -49,14 +48,14 @@ export const updateCategory = async (req: Request, res: Response) => {
 
 export const deleteCategory = async (req: Request, res: Response) => {
   const category_id = req.params.id;
-  console.log(category_id);
   const categoryRepository = getRepository(categories);
+  const category = await categoryRepository.findOneById(category_id);
   try {
-    const categories = await categoryRepository.findOne(category_id);
-    if (!categories) {
+    if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
-    await categoryRepository.remove(categories);
+    await categoryRepository.delete(category);
+    
     res.status(204).json({});
   } catch (error) {
     console.error('Error deleting category:', error);
