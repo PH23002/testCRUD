@@ -33,8 +33,9 @@ const App = () => {
       } else {
         // Ngược lại, thêm danh mục mới
         await createNewCategory(values);
-      }
+      } 
       form.resetFields();
+      setEditingCategory(null); 
       setModalVisible(false);
     } catch (error) {
       console.error('Error creating/updating category:', error);
